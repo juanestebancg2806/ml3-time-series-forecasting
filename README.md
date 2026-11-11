@@ -19,7 +19,9 @@ Este repositorio es la **única fuente de verdad** de los ejercicios: la versió
 ```
 ml3-time-series-forecasting/
 ├── README.md
-├── requirements.txt
+├── pyproject.toml          # dependencias del proyecto
+├── uv.lock                 # versiones exactas, generadas por uv
+├── .python-version         # versión de Python (3.13)
 ├── .gitignore
 ├── sesion-01-promedios-moviles-suavizacion/
 │   └── ejercicio1_pronostico_ocupados.ipynb
@@ -46,15 +48,36 @@ Los notebooks descargan los datos directamente del repositorio público del curs
 
 ## Entorno
 
-Python 3.11 o superior.
+El entorno se maneja con [uv](https://docs.astral.sh/uv/). Un solo entorno virtual, `.venv/` en la raíz del repositorio, ejecuta todos los ejercicios.
+
+- `pyproject.toml` declara las dependencias.
+- `uv.lock` fija las versiones exactas, para que ambos integrantes obtengan los mismos resultados.
+- `.python-version` fija Python 3.13; uv lo descarga si no está instalado.
+- `.venv/` no se sube al repositorio: cada integrante lo crea localmente.
+
+### Primera vez
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate        # en Windows: .venv\Scripts\activate
-pip install -r requirements.txt
+# 1. Instalar uv (una sola vez por equipo)
+curl -LsSf https://astral.sh/uv/install.sh | sh     # macOS y Linux
+# en Windows: powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+# 2. Crear .venv/ con las versiones exactas de uv.lock
+uv sync
 ```
 
-Librerías principales: `pandas`, `numpy`, `matplotlib`, `statsmodels`, `scikit-learn`, `scipy` y `openpyxl` (para leer los archivos de Excel).
+Luego, en VS Code o Jupyter, se selecciona como kernel el intérprete de `.venv/`.
+
+### Agregar o actualizar una librería
+
+```bash
+uv add nombre-libreria        # agrega la dependencia y actualiza uv.lock
+uv sync                       # en el otro computador, después de hacer pull
+```
+
+Siempre se suben juntos `pyproject.toml` y `uv.lock`. No se instalan librerías con `pip install` dentro de `.venv/`, porque esos cambios no quedan registrados.
+
+Librerías principales: `pandas`, `numpy`, `matplotlib`, `statsmodels`, `scikit-learn`, `scipy` y `openpyxl` (para leer los archivos de Excel). `ipykernel` va como dependencia de desarrollo para ejecutar los notebooks.
 
 ## Referencias
 
